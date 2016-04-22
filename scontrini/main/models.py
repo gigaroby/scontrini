@@ -8,6 +8,10 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.owner.id, filename)
 
 
+def map_categories(ateco):
+    return CATEGORIES[len(ateco) % len(CATEGORIES)]
+
+
 CATEGORIES = [(c, c) for c in ['Alimentari', 'Benzina']]
 
 
