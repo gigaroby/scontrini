@@ -13,6 +13,7 @@ from django.conf import settings
 def api_url(func):
     return "https://api-u.spaziodati.eu/{}?token={}".format(func, settings.SD_TOKEN)
 
+
 def check_resp(resp):
     if resp.status_code != 200:
         raise Exception("URL [{}] got status {} with content: {}".format(
@@ -30,12 +31,26 @@ class OcrReceipt(object):
         self.filename = filename
         self.ocr_text = None
         self.companies = []
+        self.totals = []
 
     def parse(self):
         self.ocr_text = self.get_ocr_data()
         self.companies = self.get_company_list()
         self.remove_duplicates()
         self.enrich_company_list()
+        self.totals = self.get_totals()
+
+    def get_totals(self):
+        all_numbers = re.findall(r'\b\s?\d+[\.,]\s?\d{2}\b', self.ocr_text)
+        all_numbers = [x.replace(' ', '').replace(',', '.') for x in all_numbers]
+        all_numbers_int = set()
+        for i in all_numbers:
+            try:
+                all_numbers_int.add(float(i))
+            except:
+                pass
+        all_numbers_int = sorted(list(all_numbers_int), reverse=True)
+        return all_numbers_int[:3]
 
     def scale_image(self):
         original_size = os.path.getsize(self.filename)
