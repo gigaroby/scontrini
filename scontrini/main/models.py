@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from jsonfield import JSONField
 
+from scontrini.ocr.ocr import OcrReceipt
+
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -24,6 +26,7 @@ class Receipt(models.Model):
     completed = models.BooleanField(default=False)
 
     name = models.CharField(max_length=200, null=True, blank=True)
+    shop = models.CharField(max_length=400, null=True, blank=True)
     category = models.CharField(max_length=200, null=True, blank=True, choices=CATEGORIES)
     price = models.FloatField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
@@ -39,8 +42,8 @@ class Receipt(models.Model):
     def fetch_shops(self):
         if self.receipt_data != '':
             return
-        self.receipt_data = [
-            {'label': 'La vecchia', 'address': {'municipality': 'Trento'}},
-            {'label': 'Gli evasori', 'address': {'municipality': 'Trento'}},
-        ]
+
+        l = OcrReceipt('/home/vad/Source/Spaziodati/scontrini/grom.jpg').get_company_list()
+
+        self.receipt_data = l
         self.save()
