@@ -168,5 +168,5 @@ def ateco_to_category(ateco):
 
 
 def get_categories():
-    return {x for _, x in MAPPING.items()}
+    return sorted({x for _, x in MAPPING.items()})
 
