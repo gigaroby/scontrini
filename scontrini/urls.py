@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from scontrini.main.views import MainView
+from scontrini.main.views import MainView, UploadView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', MainView.as_view()),
+    url(r'^$', MainView.as_view()),
+    url(r'^upload/', UploadView.as_view())
 ]
