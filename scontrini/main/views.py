@@ -72,7 +72,7 @@ class ReceiptListView(ListView):
     def get_queryset(self):
         q = self.request.GET.get('q')
         cat = self.request.GET.get('cat')
-        qs = super().get_queryset()
+        qs = super().get_queryset().filter(owner=self.request.user)
 
         if q:
             qs = qs.filter(Q(shop__icontains=q) | Q(notes__icontains=q))
@@ -95,10 +95,22 @@ class StatisticsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         from collections import Counter
+        from datetime import datetime
+
+        now = datetime.now()
+        month_stats = {c[0]: [0] * 12 for c in CATEGORIES}
+        month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
         c = Counter()
-        for r in Receipt.objects.filter(completed=True):
-            c[r.category] += 1
-        total = len(c)
+        total = 0
+        for r in Receipt.objects.filter(completed=True, owner=self.request.user):
+            c[r.category] += r.price
+            total += r.price
+
+            month_idx = now.month - r.created.month + 11
+            cat_data = month_stats[r.category]
+            cat_data[month_idx] = cat_data[month_idx] + r.price
 
         data = [{
             "name": 'Categories',
@@ -108,7 +120,21 @@ class StatisticsView(TemplateView):
                 "y": (amount/total)*100
             } for name, amount in c.items()]
         }]
-        return {'data': json.dumps(data), 'caption': 'Categorie di acquisto'}
+        return {
+            'pie': {
+                'data': json.dumps(data),
+                'caption': 'Categorie di acquisto'
+            },
+            'lines': {
+                'data': json.dumps([
+                    {
+                        'name': k,
+                        'data': v
+                    } for k, v in month_stats.items()
+                ]),
+                'labels': month_names[now.month:] + month_names[:now.month],
+            }
+        }
 
 
 class ReceiptCreateForm(ModelForm):

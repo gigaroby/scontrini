@@ -12,9 +12,11 @@
 
 {% block content %}
 
+    <div id="trend" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
     <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 
-{#    <canvas id="category-chart" width="400" height="400"></canvas>#}
+
     <script>
         $(function () {
             $(document).ready(function () {
@@ -42,7 +44,44 @@
                             showInLegend: true
                         }
                     },
-                    series: {{ data|safe }}
+                    series: {{ pie.data|safe }}
+                });
+
+                new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'trend'
+                    },
+                    title: {
+                        text: 'Spesa mensile per categoria',
+                        x: -20 //center
+                    },
+{#                    subtitle: {#}
+{#                        text: 'Source: WorldClimate.com',#}
+{#                        x: -20#}
+{#                    },#}
+                    xAxis: {
+                        categories: {{ lines.labels|safe }}
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Spesa (E)'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valueSuffix: 'E'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: {{ lines.data|safe }}
                 });
             });
         });
