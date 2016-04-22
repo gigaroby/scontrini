@@ -69,9 +69,9 @@ class OcrReceipt(object):
     def get_company_list(self):
         ocr_text = self.get_ocr_data()
 
-        good_vat = self.search_for_piva(ocr_text)
-        if good_vat:
-            return self.anagrafica_by_vat(good_vat)
+        # good_vat = self.search_for_piva(ocr_text)
+        # if good_vat:
+        #     return self.anagrafica_by_vat(good_vat)
 
         with_company_names = self.search_with_companytxt(ocr_text)
         if with_company_names:
@@ -122,7 +122,7 @@ class OcrReceipt(object):
             api_url('v2/companies/annotate'),
             data={
                 'text': text,
-                'min_confidence': 0,
+                'min_confidence': 0.1,
                 'include': 'sameAs'
             }
         )
@@ -132,7 +132,7 @@ class OcrReceipt(object):
         if not all_companies:
             return []
         else:
-            all_companies = sorted(all_companies, key=itemgetter('confidence'), reversed=True)
+            all_companies = sorted(all_companies, key=itemgetter('confidence'), reverse=True)
             pivas = [i['sameAs']['vatUrn'][7:] for i in all_companies]
             all_results = []
             for piva in pivas:
