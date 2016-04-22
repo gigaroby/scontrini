@@ -94,7 +94,9 @@ class OcrReceipt(object):
             return result['ParsedResults'][0]['ParsedText']
 
     def get_company_list(self):
-
+        if not self.ocr_text.strip():
+            return []
+        
         with_good_vat = self.search_for_piva_with_datatxt(self.ocr_text)
         if with_good_vat:
             return with_good_vat
