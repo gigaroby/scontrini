@@ -66,9 +66,9 @@ class OcrReceipt(object):
     def get_company_list(self):
         ocr_text = self.get_ocr_data()
 
-        # good_vat = self.search_for_piva(ocr_text)
-        # if good_vat:
-        #     return self.anagrafica_by_vat(good_vat)
+        good_vat = self.search_for_piva(ocr_text)
+        if good_vat:
+             return self.anagrafica_by_vat(good_vat)
 
         with_company_names = self.search_with_companytxt(ocr_text)
         if with_company_names:
