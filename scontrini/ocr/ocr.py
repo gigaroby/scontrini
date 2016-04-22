@@ -1,5 +1,6 @@
 import json
 from _operator import itemgetter
+import re
 
 import jmespath
 import os
@@ -27,6 +28,14 @@ class OcrReceipt(object):
 
     def __init__(self, filename):
         self.filename = filename
+        self.ocr_text = None
+        self.companies = []
+
+    def parse(self):
+        self.ocr_text = self.get_ocr_data()
+        self.companies = self.get_company_list()
+        self.remove_duplicates()
+        self.enrich_company_list()
 
     def scale_image(self):
         original_size = os.path.getsize(self.filename)
@@ -64,17 +73,51 @@ class OcrReceipt(object):
             return result['ParsedResults'][0]['ParsedText']
 
     def get_company_list(self):
-        ocr_text = self.get_ocr_data()
 
-        good_vat = self.search_for_piva(ocr_text)
-        if good_vat:
-             return self.anagrafica_by_vat(good_vat)
+        with_good_vat = self.search_for_piva_with_datatxt(self.ocr_text)
+        if with_good_vat:
+            return with_good_vat
 
-        with_company_names = self.search_with_companytxt(ocr_text)
+        with_potential_vat = self.search_for_pivas_with_regex(self.ocr_text)
+        if with_potential_vat:
+            return with_potential_vat
+
+        with_company_names = self.search_with_companytxt(self.ocr_text)
         if with_company_names:
             return with_company_names
         else:
             return []
+
+    def remove_duplicates(self):
+        new_list = []
+
+        def search_by_piva(l, achene):
+            for i in l:
+                if i['id'] == achene:
+                    return True
+            return False
+
+        for company in self.companies:
+            if not search_by_piva(new_list, company['id']):
+                new_list.append(company)
+
+        self.companies = new_list
+
+    def enrich_company_list(self):
+        for company in self.companies:
+            resp = requests.get(
+                api_url('v2/companies/{}'.format(company['id'])),
+                params={'packages': '*'}
+            )
+            check_resp(resp)
+            detail = resp.json()
+            coords = jmespath.search('item.locations.items[?address.lon].address.[lon, lat]', detail)
+            company['locations'] = coords
+
+            company['people'] = jmespath.search(
+                'item.people.items[].{"name": name, "birthday": birthDate, "role": roles[0].name}',
+                detail
+            )
 
     def anagrafica_by_vat(self, vat, fuzzy=0):
         resp = requests.get(api_url('azienda/anagrafica'), params={'piva': vat, 'fuzzy': 0})
@@ -89,10 +132,11 @@ class OcrReceipt(object):
                 'atoka_link': item['link_atoka'],
                 'sector': item['descrizione'],
                 'vat': item['piva'],
+                'id': item['acheneID'][35:47],
                 'ateco_code': item['codice_ateco'][-1]
             } for item in result['results']]
 
-    def search_for_piva(self, text):
+    def search_for_piva_with_datatxt(self, text):
         resp = requests.post(
             api_url('datatxt/nex/v1'),
             data={
@@ -110,9 +154,34 @@ class OcrReceipt(object):
             result
         )
         if vatcodes:
-            return vatcodes[0][2:]
+            return self.anagrafica_by_vat(vatcodes[0][2:])
         else:
             return []
+
+    def search_for_pivas_with_regex(self, text):
+        all_results = []
+
+        potential_pivas = re.findall('\b\d{10,11}\b', text)
+        potential_piva_text = 'P.IVA ' + ' P.IVA'.join(potential_pivas)
+
+        valid_pivas = self.search_for_piva_with_datatxt(potential_piva_text)
+        if valid_pivas:
+            for piva in valid_pivas:
+                all_results += self.anagrafica_by_vat(piva)
+            if all_results:
+                return all_results
+
+        # nessuna piva valida
+        for piva in potential_pivas:
+            all_results += self.anagrafica_by_vat(piva, fuzzy=1)
+            if all_results:
+                return all_results
+
+        # search with fuzzy 2
+        for piva in potential_pivas:
+            all_results += self.anagrafica_by_vat(piva, fuzzy=2)
+
+        return all_results
 
     def search_with_companytxt(self, text):
         resp = requests.post(
