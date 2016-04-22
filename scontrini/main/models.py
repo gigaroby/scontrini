@@ -55,13 +55,13 @@ class Receipt(models.Model):
         self.save()
 
     def get_icon(self, ):
-        icons = {'Affitto': 'glyphicon-home',
-         'Bollette': 'glyphicon-envelope',
-         'Alberghi e ristoranti': 'glyphicon-cutlery',
-         'Altro': 'glyphicon-gift',
-         'Automobile':'glyphicon-road',
-         'Intrattenimento': 'glyphicon-play',
-         'Spesa': 'glyphicon-shopping-cart',
-         'Vestiti': 'glyphicon-scissors'
+        icons = {'Affitto': 'home',
+         'Bollette': 'envelope',
+         'Alberghi e ristoranti': 'cutlery',
+         'Altro': 'gift',
+         'Automobile':'road',
+         'Intrattenimento': 'play',
+         'Spesa': 'shopping-cart',
+         'Vestiti': 'scissors'
          }
-        return icons.get(self.category, 'glyphicon-eur')
+        return icons.get(self.category, 'eur')

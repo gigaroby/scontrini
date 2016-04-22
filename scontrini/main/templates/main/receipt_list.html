@@ -56,18 +56,18 @@
     {% for receipt in object_list %}
         <div class="row">
             <div class="col-xs-1">
-            <span class="glyphicon {{ receipt.get_icon }} aria-hidden="true style="font-size: 24px; margin-top: 15px; margin-left: 15px;"></span>
+            <span class="glyphicon glyphicon-{{ receipt.get_icon }}" title="{{ receipt.category }}" aria-hidden="true" style="font-size: 24px; margin-top: 15px; margin-left: 15px;"></span>
             </div>
             <div class="col-xs-7">
-                <a href="{{ receipt.image.url }}"><p class="lead">{{ receipt.shop }}</p></a>
+                <a href="{{ receipt.image.url }}" title="View"><p class="lead">{{ receipt.shop }}</p></a>
                 <p><span class="label label-default">{{ receipt.category }}</span> / <small>{{ receipt.created|date }}</small></p>
             </div>
             <div class="col-xs-2">
                 <p class="lead">{{ receipt.price }}&euro;</p>
             </div>
             <div class="col-xs-2">
-                <a class="btn btn-default" href="/edit/{{ receipt.pk }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                <a class="btn btn-default" href="{{ receipt.image.url }}"><span class="glyphicon glyphicon-download"></span></a>
+                <a class="btn btn-default" href="/edit/{{ receipt.pk }}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-default" href="{{ receipt.image.url }}" title="View"><span class="glyphicon glyphicon-download"></span></a>
             </div>
         </div>
         <hr>
