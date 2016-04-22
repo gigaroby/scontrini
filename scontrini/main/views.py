@@ -2,9 +2,9 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import ModelForm
+from django.views.generic.edit import UpdateView
 
 from .models import Receipt
-
 
 
 class MainView(TemplateView):
@@ -23,3 +23,9 @@ class UploadView(LoginRequiredMixin, View):
         image_base64 = request.body[len(remove):]
 
         return HttpResponse(b'merda')
+
+
+class ReceiptUpdate(UpdateView):
+    model = Receipt
+    fields = ['name', 'category', 'price', 'notes']
+    template_name_suffix = '_update_form'

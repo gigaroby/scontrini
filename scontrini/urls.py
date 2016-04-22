@@ -16,10 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from scontrini.main.views import MainView, UploadView
+from scontrini.main.views import MainView, UploadView, ReceiptUpdate
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', MainView.as_view()),
-    url(r'^upload/', UploadView.as_view())
+    url(r'^upload/$', UploadView.as_view()),
+    url(r'^edit/(?P<pk>\d+)$', ReceiptUpdate.as_view()),
 ]

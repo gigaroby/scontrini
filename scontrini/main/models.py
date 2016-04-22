@@ -8,6 +8,14 @@ class Receipt(models.Model):
 
     image = models.ImageField()
     receipt_data = JSONField(blank=True)
+    completed = models.BooleanField(default=False)
+
+    name = models.CharField(max_length=200, null=True, blank=True)
+    category = models.CharField(max_length=200, null=True, blank=True)
+    price = models.FloatField(null=True)
+    notes = models.TextField(max_length=10000, null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
 
+    def get_absolute_url(self):
+        return '/edit/{}'.format(self.pk)
