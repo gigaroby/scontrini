@@ -1,4 +1,19 @@
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update" />
-</form>
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Scontrini{% endblock %}
+
+{% block content %}
+    <form action="" method="post">{% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "save" %} Save
+            </button>
+
+            {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
+        {% endbuttons %}
+    </form>
+{% endblock %}
