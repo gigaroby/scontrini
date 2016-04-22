@@ -3,26 +3,35 @@
 {% load bootstrap3 %}
 
 
-{% block title %}Scontrini{% endblock %}
+{% block title %}I tuoi scontrini{% endblock %}
 
 {% block content %}
-    {% bootstrap_button "Carica un nuovo scontrino" href="/new/" button_class="btn-primary" %}
+    <div class="row">
+        <div class="pull-right">
+            {% bootstrap_button "Carica un nuovo scontrino" href="/new/" button_class="btn-primary" %}
+        </div>
+    </div>
 
-    <h2>I tuoi scontrini</h2>
     {% for receipt in object_list %}
+        <hr>
         <div class="row">
-            <div class="col-xs-9">
-                <p><strong>{{ receipt.shop }}</strong></p>
-                <p><small>{{ receipt.created|date }}</small></p>
+            <div class="col-xs-1">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 24px; margin-top: 15px; margin-left: 15px;"></span>
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-7">
+                <p class="lead">{{ receipt.shop }}</p>
+                <p>{{ receipt.category }} / <small>{{ receipt.created|date }}</small></p>
+            </div>
+            <div class="col-xs-2">
                 <p class="lead">{{ receipt.price }}&euro;</p>
             </div>
-            <div class="col-xs-3">
-                <a href="/edit/{{ receipt.pk }}">edit</a>
+            <div class="col-xs-2">
+                <a class="btn btn-default" href="/edit/{{ receipt.pk }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-default" href="{{ receipt.image.url }}"><span class="glyphicon glyphicon-download"></span></a>
             </div>
         </div>
     {% empty %}
         <li>No receipts yet.</li>
     {% endfor %}
+        <hr>
 {% endblock %}
