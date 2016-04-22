@@ -58,15 +58,21 @@ class OcrReceipt(object):
         scale_factor = 1.75
         if current_size > settings.OCR_SIZE_LIMIT:
             with Image.open(self.filename) as original:
-                w, h = original.size
-                ratio = original_size / settings.OCR_SIZE_LIMIT / scale_factor
-                scaled_w = w / ratio
-                scaled_h = h / ratio
-                original.thumbnail((scaled_w, scaled_h), resample=0)
-                f, name = tempfile.mkstemp(suffix='.png')
-                os.close(f)
-                original.save(name)
-                return name
+                while True:
+                    w, h = original.size
+                    ratio = original_size / settings.OCR_SIZE_LIMIT / scale_factor
+                    scaled_w = w / ratio
+                    scaled_h = h / ratio
+                    original.thumbnail((scaled_w, scaled_h), resample=0)
+                    f, name = tempfile.mkstemp(suffix='.png')
+                    os.close(f)
+                    original.save(name)
+                    current_size = os.path.getsize(name)
+                    if current_size < settings.OCR_SIZE_LIMIT:
+                        return name
+                    else:
+                        scale_factor += 0.05
+                        os.remove(name)
         else:
             return self.filename
 
