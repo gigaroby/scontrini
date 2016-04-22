@@ -109,7 +109,7 @@ class ReceiptShopSelect(UpdateView):
         obj = self.object
         selected = obj.receipt_data[obj.selected_shop]
         obj.shop = selected['label']
-        obj.category = map_categories('11.5')
+        obj.category = map_categories(selected['ateco_code'])
         obj.save()
 
         return out
