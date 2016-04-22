@@ -19,13 +19,17 @@ from django.conf.urls import url
 from django.contrib import admin
 
 
-from scontrini.main.views import MainView, UploadView, ReceiptUpdate, ReceiptListView
+from scontrini.main.views import MainView, UploadView, ReceiptUpdate, ReceiptListView#, StatisticsView
+# from scontrini.main.charts import CategoryChart
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^new/$', MainView.as_view()),
+    url(r'^new/$', MainView.as_view(), name='new-receipt'),
     url(r'^upload/$', UploadView.as_view()),
     url(r'^edit/(?P<pk>\d+)$', ReceiptUpdate.as_view()),
-    url(r'^$', ReceiptListView.as_view()),
+    url(r'^$', ReceiptListView.as_view(), name='home'),
+
+    # url(r'^stats/', StatisticsView.as_view(), name='view-stats')
+    # url(r'^stats/chart', CategoryChart.as_view(), name='category-chart')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
