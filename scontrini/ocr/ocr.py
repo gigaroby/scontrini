@@ -6,7 +6,7 @@ import jmespath
 import os
 import requests
 import tempfile
-from PIL import Image
+from PIL import Image, ImageEnhance
 from django.conf import settings
 
 
@@ -29,7 +29,7 @@ class OcrReceipt(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.ocr_text = None
+        self.ocr_text = ''
         self.companies = []
         self.totals = []
 
@@ -57,23 +57,30 @@ class OcrReceipt(object):
     def scale_image(self):
         original_size = os.path.getsize(self.filename)
         current_size = original_size
-        scale_factor = 1.75
+        scale_factor = .95
         if current_size > settings.OCR_SIZE_LIMIT:
             with Image.open(self.filename) as original:
+                enhancer = ImageEnhance.Sharpness(original)
+                enhanced = enhancer.enhance(4)
                 while True:
-                    w, h = original.size
-                    ratio = original_size / settings.OCR_SIZE_LIMIT / scale_factor
-                    scaled_w = w / ratio
-                    scaled_h = h / ratio
-                    original.thumbnail((scaled_w, scaled_h), resample=0)
+                    w, h = enhanced.size
+                    scaled_w = w * scale_factor
+                    scaled_h = h * scale_factor
+                    enhanced.thumbnail((scaled_w, scaled_h))
                     f, name = tempfile.mkstemp(suffix='.png')
                     os.close(f)
-                    original.save(name)
+                    enhanced.save(name)
                     current_size = os.path.getsize(name)
+                    print("current size: {}, scale factor: {}, scaled_w: {}, scaled_h: {}".format(current_size, scale_factor, scaled_w, scaled_h))
                     if current_size < settings.OCR_SIZE_LIMIT:
+                        #with Image.open(name) as scaled:
+                            #enhancer = ImageEnhance.Sharpness(scaled)
+                            #new = enhancer.enhance(4)
+                            #new.save(name)
+                        print(name)
                         return name
                     else:
-                        scale_factor += 0.05
+                        scale_factor -= 0.05
                         os.remove(name)
         else:
             return self.filename
@@ -145,7 +152,7 @@ class OcrReceipt(object):
             )
 
     def anagrafica_by_vat(self, vat, fuzzy=0):
-        resp = requests.get(api_url('azienda/anagrafica'), params={'piva': vat, 'fuzzy': 0})
+        resp = requests.get(api_url('azienda/anagrafica'), params={'piva': vat, 'fuzzy': fuzzy})
         check_resp(resp)
         result = resp.json()
         if result['meta']['items'] == 0:
@@ -169,7 +176,8 @@ class OcrReceipt(object):
                 'extra_types': 'vat',
                 'text': text,
                 'country': 'it',
-                'min_confidence': 0
+                'min_confidence': 0,
+                'lang': 'it',
             }
         )
         check_resp(resp)
@@ -186,7 +194,7 @@ class OcrReceipt(object):
     def search_for_pivas_with_regex(self, text):
         all_results = []
 
-        potential_pivas = re.findall('\b\d{10,11}\b', text)
+        potential_pivas = re.findall(r'\d{10,11}', text)
         potential_piva_text = 'P.IVA ' + ' P.IVA'.join(potential_pivas)
 
         valid_pivas = self.search_for_piva_with_datatxt(potential_piva_text)
@@ -214,7 +222,8 @@ class OcrReceipt(object):
             data={
                 'text': text,
                 'min_confidence': 0.1,
-                'include': 'sameAs'
+                'include': 'sameAs',
+                'lang': 'it',
             }
         )
         check_resp(resp)

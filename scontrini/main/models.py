@@ -49,9 +49,11 @@ class Receipt(models.Model):
         if self.receipt_data != '':
             return
 
-        l = OcrReceipt(self.image.path).get_company_list()
+        l = OcrReceipt(self.image.path)
+        l.parse()
+        print(l.ocr_text)
 
-        self.receipt_data = l
+        self.receipt_data = l.companies
         self.save()
 
     def get_icon(self, ):
