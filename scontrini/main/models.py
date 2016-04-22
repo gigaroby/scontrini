@@ -26,6 +26,7 @@ class Receipt(models.Model):
     completed = models.BooleanField(default=False)
 
     name = models.CharField(max_length=200, null=True, blank=True)
+    shop = models.CharField(max_length=400, null=True, blank=True)
     category = models.CharField(max_length=200, null=True, blank=True, choices=CATEGORIES)
     price = models.FloatField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)

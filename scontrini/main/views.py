@@ -11,7 +11,7 @@ from django.forms.models import ModelForm
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
-from .models import Receipt
+from .models import Receipt, map_categories
 
 
 class MainView(TemplateView):
@@ -43,7 +43,7 @@ class ReceiptUpdateForm(ModelForm):
 
     class Meta:
         model = Receipt
-        fields = ['name', 'category', 'price', 'notes']
+        fields = ['name', 'shop', 'category', 'price', 'notes']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,7 +74,7 @@ class StatisticsView(TemplateView):
     def get_context_data(self, **kwargs):
         from collections import Counter
         c = Counter()
-        for r in Receipt.objects.all():
+        for r in Receipt.objects.filter(completed=True):
             c[r.category] += 1
         total = len(c)
 
@@ -102,3 +102,14 @@ class ReceiptShopSelect(UpdateView):
         context['object'] = self.object
 
         return context
+
+    def form_valid(self, form):
+        out = super().form_valid(form)
+
+        obj = self.object
+        selected = obj.receipt_data[obj.selected_shop]
+        obj.shop = selected['label']
+        obj.category = map_categories('11.5')
+        obj.save()
+
+        return out
