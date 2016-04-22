@@ -14,7 +14,7 @@ from django.forms import HiddenInput
 from django.views.generic.edit import UpdateView, CreateView, FormView
 from django.views.generic.list import ListView
 
-from .models import Receipt, map_categories
+from .models import Receipt, map_categories, CATEGORIES
 
 
 class MainView(TemplateView):
@@ -74,11 +74,23 @@ class ReceiptListView(ListView):
 
     def get_queryset(self):
         q = self.request.GET.get('q')
+        cat = self.request.GET.get('cat')
         qs = super().get_queryset()
 
         if q:
             qs = qs.filter(Q(shop__icontains=q) | Q(notes__icontains=q))
+
+        if cat:
+            qs = qs.filter(category=cat)
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['categories'] = CATEGORIES
+        context['selected_category'] = self.request.GET.get('cat')
+
+        return context
 
 
 class StatisticsView(TemplateView):
