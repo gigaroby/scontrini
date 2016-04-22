@@ -35,6 +35,8 @@ class OcrReceipt(object):
 
     def parse(self):
         self.ocr_text = self.get_ocr_data()
+        if self.ocr_text is None:
+            self.ocr_text = ''
         self.companies = self.get_company_list()
         self.remove_duplicates()
         self.enrich_company_list()
@@ -94,6 +96,8 @@ class OcrReceipt(object):
             return result['ParsedResults'][0]['ParsedText']
 
     def get_company_list(self):
+        if not self.ocr_text.strip():
+            return []
 
         with_good_vat = self.search_for_piva_with_datatxt(self.ocr_text)
         if with_good_vat:
