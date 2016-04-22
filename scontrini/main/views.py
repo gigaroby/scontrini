@@ -71,7 +71,7 @@ class ReceiptListView(ListView):
     def get_queryset(self):
         q = self.request.GET.get('q')
         cat = self.request.GET.get('cat')
-        qs = super().get_queryset().filter(owner=self.request.user)
+        qs = super().get_queryset().filter()
 
         if q:
             qs = qs.filter(Q(shop__icontains=q) | Q(notes__icontains=q))
