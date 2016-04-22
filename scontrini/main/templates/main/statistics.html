@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% load highcharts_tags %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_extra_head %}
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+{% endblock %}
+
+{% block title %}Vedi statistiche{% endblock %}
+
+{% block content %}
+
+    <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
+{#    <canvas id="category-chart" width="400" height="400"></canvas>#}
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                new Highcharts.Chart({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie',
+                        renderTo: 'container'
+                    },
+                    title: {
+                        text: '{{ caption }}'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    series: {{ data|safe }}
+                });
+            });
+        });
+    </script>
+{% endblock %}

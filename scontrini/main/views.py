@@ -1,5 +1,6 @@
 import io
 import time
+import json
 import base64
 
 from django.core.files import File
@@ -58,3 +59,24 @@ class ReceiptUpdate(UpdateView):
 
 class ReceiptListView(ListView):
     model = Receipt
+
+
+class StatisticsView(TemplateView):
+    template_name = "main/statistics.html"
+
+    def get_context_data(self, **kwargs):
+        from collections import Counter
+        c = Counter()
+        for r in Receipt.objects.all():
+            c[r.category] += 1
+        total = len(c)
+
+        data = [{
+            "name": 'Categories',
+            "colorByPoint": True,
+            "data": [{
+                "name": name,
+                "y": (amount/total)*100
+            } for name, amount in c.items()]
+        }];
+        return {'data': json.dumps(data), 'caption': 'Categorie di acquisto'}
