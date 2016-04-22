@@ -8,7 +8,7 @@
 {% block content %}
     <div class="row">
 
-        <div class="col-xs-offset-3 col-xs-2">
+        <div class="col-sm-offset-3 col-sm-2">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="true">
@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <div class="col-xs-5">
+        <div class="col-sm-4">
             <form action="" method="get">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Cerca" name="q">
@@ -38,14 +38,14 @@
             </form>
         </div>
 
-        <div class="col-xs-2">
-            {% bootstrap_button "Carica" href="/new/" button_class="btn-primary" %}
+        <div class="col-sm-3">
+            {% bootstrap_button "Carica scontrino" href="/new/" button_class="btn-primary" %}
         </div>
     </div>
 
     {% if selected_category %}
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 Selected category: <span class="label label-primary">{{ selected_category }}</span>
             </div>
         </div>
@@ -55,17 +55,17 @@
 
     {% for receipt in object_list %}
         <div class="row">
-            <div class="col-xs-1">
+            <div class="col-sm-2">
             <span class="glyphicon glyphicon-{{ receipt.get_icon }}" title="{{ receipt.category }}" aria-hidden="true" style="font-size: 24px; margin-top: 15px; margin-left: 15px;"></span>
             </div>
-            <div class="col-xs-7">
+            <div class="col-sm-7">
                 <a href="{{ receipt.image.url }}" title="View"><p class="lead">{{ receipt.shop }}</p></a>
                 <p><span class="label label-default">{{ receipt.category }}</span> / <small>{{ receipt.created|date }}</small></p>
             </div>
-            <div class="col-xs-2">
+            <div class="col-sm-2">
                 <p class="lead">{{ receipt.price }}&euro;</p>
             </div>
-            <div class="col-xs-2">
+            <div class="col-sm-2">
                 <a class="btn btn-default" href="/edit/{{ receipt.pk }}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-default" href="{{ receipt.image.url }}" title="View"><span class="glyphicon glyphicon-download"></span></a>
             </div>
