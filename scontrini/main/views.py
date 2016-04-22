@@ -142,7 +142,7 @@ class ReceiptNewView(FormView):
 class ReceiptShopSelect(UpdateView):
     template_name = 'main/shop_select.html'
     model = Receipt
-    fields = ['selected_shop']
+    fields = ['selected_shop', 'selected_price']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -160,6 +160,7 @@ class ReceiptShopSelect(UpdateView):
         selected = obj.receipt_data[obj.selected_shop]
         obj.shop = selected['label']
         obj.category = map_categories(selected['ateco_code'])
+        obj.price = obj.price_list[obj.selected_price]
         obj.save()
 
         return out

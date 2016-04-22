@@ -30,6 +30,7 @@ class Receipt(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     shop = models.CharField(max_length=400, null=True, blank=True)
     category = models.CharField(max_length=200, null=True, blank=True, choices=CATEGORIES)
+    price_list = JSONField(blank=True)
     price = models.FloatField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
 
@@ -54,6 +55,7 @@ class Receipt(models.Model):
         print(l.ocr_text)
 
         self.receipt_data = l.companies
+        self.price_list = l.totals
         self.save()
 
     def get_icon(self, ):

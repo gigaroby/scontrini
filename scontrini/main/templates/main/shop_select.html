@@ -24,6 +24,19 @@
                     </div>
                 {% endfor %}
 
+                {% for pprice in object.price_list%}
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="radio" name="selected_price" value="{{ forloop.counter0 }}"
+                                {% if forloop.counter0 == object.price_list %}checked{% endif %}>
+                        </span>
+                        <div class="form-control" style="height: 60px">
+                            {{ pprice }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Select
