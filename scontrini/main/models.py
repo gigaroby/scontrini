@@ -58,14 +58,13 @@ class Receipt(models.Model):
         self.price_list = l.totals
         self.save()
 
-    def get_icon(self, ):
+    def get_icon(self):
         icons = {'Affitto': 'home',
-         'Bollette': 'envelope',
-         'Alberghi e ristoranti': 'cutlery',
-         'Altro': 'gift',
-         'Automobile':'road',
-         'Intrattenimento': 'play',
-         'Spesa': 'shopping-cart',
-         'Vestiti': 'scissors'
-         }
+                 'Bollette': 'envelope',
+                 'Alberghi e ristoranti': 'cutlery',
+                 'Altro': 'gift',
+                 'Automobile':'road',
+                 'Intrattenimento': 'play',
+                 'Spesa': 'shopping-cart',
+                 'Vestiti': 'scissors'}
         return icons.get(self.category, 'eur')
