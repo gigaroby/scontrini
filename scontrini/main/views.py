@@ -5,11 +5,13 @@ import base64
 
 from django.core.files import File
 from django.db.models import Q
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import ModelForm
-from django.views.generic.edit import UpdateView
+from django.forms import HiddenInput
+from django.views.generic.edit import UpdateView, CreateView, FormView
 from django.views.generic.list import ListView
 
 from .models import Receipt, map_categories
@@ -65,6 +67,8 @@ class ReceiptUpdate(UpdateView):
         return out
 
 
+
+
 class ReceiptListView(ListView):
     queryset = Receipt.objects.filter(completed=True)
 
@@ -98,6 +102,31 @@ class StatisticsView(TemplateView):
         return {'data': json.dumps(data), 'caption': 'Categorie di acquisto'}
 
 
+class ReceiptCreateForm(ModelForm):
+    class Meta:
+        model = Receipt
+        fields = ['image', 'has_position', 'lat', 'long']
+        widgets = {
+            'lat': HiddenInput(),
+            'long': HiddenInput(),
+            'has_position': HiddenInput(),
+        }
+
+
+class ReceiptNewView(FormView):
+    template_name = 'main/receipt_create_form.html'
+    form_class = ReceiptCreateForm
+
+    def get_success_url(self):
+        return reverse('select-receipt', kwargs={'pk': self.obj.id})
+
+    def form_valid(self, form):
+        self.obj = form.save(commit=False)
+        self.obj.owner = self.request.user
+        self.obj.save()
+        return super().form_valid(form)
+
+
 class ReceiptShopSelect(UpdateView):
     template_name = 'main/shop_select.html'
     model = Receipt
@@ -122,3 +151,4 @@ class ReceiptShopSelect(UpdateView):
         obj.save()
 
         return out
+

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Nuovo scontrino{% endblock %}
+
+{% block content %}
+    <form action="." enctype="multipart/form-data" id="receipt-create-form" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% buttons %}
+            <button type="submit" class="btn btn-primary" id="submit-create">
+                {% bootstrap_icon "save" %} Save
+            </button>
+
+            {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
+        {% endbuttons %}
+    </form>
+    <script>
+        var form = document.getElementById("receipt-create-form");
+        var submit = document.getElementById("submit-create");
+        submit.enabled = false;
+        form.lat = 0;
+        form.long = 0;
+        if (!("geolocation" in navigator)) {
+            submit.enabled = true;
+            form.has_position = false;
+        }
+
+        navigator.geolocation.getCurrentPosition(function(position){
+            form.has_position = true;
+            form.lat = position.coords.latitude;
+            form.long = position.coords.longitude;
+            submit.enabled = true;
+        }, function(error) {
+            console.log(error);
+            form.has_position = false;
+            submit.enabled = true;
+        });
+    </script>
+{% endblock %}
+

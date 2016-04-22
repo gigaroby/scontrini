@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from jsonfield import JSONField
+from scontrini.ocr.ocr import OcrReceipt
 from .ateco import ateco_to_category, get_categories
 
 
 CATEGORIES = [(c, c) for c in get_categories()]
 
-from scontrini.ocr.ocr import OcrReceipt
 
 
 def user_directory_path(instance, filename):
@@ -32,6 +32,10 @@ class Receipt(models.Model):
     price = models.FloatField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
 
+    has_position = models.BooleanField(default=False)
+    lat = models.FloatField(verbose_name='latitude', blank=True, null=True)
+    long = models.FloatField(verbose_name='longitude', blank=True, null=True)
+
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -44,7 +48,7 @@ class Receipt(models.Model):
         if self.receipt_data != '':
             return
 
-        l = OcrReceipt('/home/vad/Source/Spaziodati/scontrini/grom.jpg').get_company_list()
+        l = OcrReceipt(self.image.path).get_company_list()
 
         self.receipt_data = l
         self.save()

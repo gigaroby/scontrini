@@ -25,6 +25,18 @@
 
 		// Put event listeners into place
 		window.addEventListener("DOMContentLoaded", function() {
+            var hasGeoloc = "geolocator" in navigation;
+            var done = false;
+            var lat = 0;
+            var long = 0;
+            if(hasGeoloc){
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    lat = position.coord.latitude;
+                    long = position.coord.longitude;
+                    done = true;
+                });
+            }
+
 			// Grab elements, create settings, etc.
 			var canvas = document.getElementById("canvas"),
 				context = canvas.getContext("2d"),
@@ -56,6 +68,7 @@
 			document.getElementById("snap").addEventListener("click", function() {
 				context.drawImage(video, 0, 0, 640, 480);
 			});
+
 
             document.getElementById("save").addEventListener("click", function() {
                 var canvasData = canvas.toDataURL("image/png");
