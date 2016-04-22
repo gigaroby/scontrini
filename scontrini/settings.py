@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'scontrini.main',
 
     'bootstrap3',
-    'highcharts',
 ]
 
 MIDDLEWARE_CLASSES = [
