@@ -4,6 +4,7 @@ import json
 import base64
 
 from django.core.files import File
+from django.db.models import Q
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,11 +40,11 @@ class UploadView(LoginRequiredMixin, View):
 
 
 class ReceiptUpdateForm(ModelForm):
-    required_fields = ['name', 'category', 'price']
+    required_fields = ['category', 'price']
 
     class Meta:
         model = Receipt
-        fields = ['name', 'shop', 'category', 'price', 'notes']
+        fields = ['shop', 'category', 'price', 'notes']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,6 +67,14 @@ class ReceiptUpdate(UpdateView):
 
 class ReceiptListView(ListView):
     queryset = Receipt.objects.filter(completed=True)
+
+    def get_queryset(self):
+        q = self.request.GET.get('q')
+        qs = super().get_queryset()
+
+        if q:
+            qs = qs.filter(Q(shop__icontains=q) | Q(notes__icontains=q))
+        return qs
 
 
 class StatisticsView(TemplateView):

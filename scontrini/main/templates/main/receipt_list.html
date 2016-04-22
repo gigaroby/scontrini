@@ -7,8 +7,21 @@
 
 {% block content %}
     <div class="row">
-        <div class="pull-right">
-            {% bootstrap_button "Carica un nuovo scontrino" href="/new/" button_class="btn-primary" %}
+        <div class="col-xs-offset-5 col-xs-5">
+            <form action="" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." name="q">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-2">
+            {% bootstrap_button "Carica" href="/new/" button_class="btn-primary" %}
         </div>
     </div>
 
@@ -19,7 +32,7 @@
                 <span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 24px; margin-top: 15px; margin-left: 15px;"></span>
             </div>
             <div class="col-xs-7">
-                <p class="lead">{{ receipt.shop }}</p>
+                <a href="{{ receipt.image.url }}"><p class="lead">{{ receipt.shop }}</p></a>
                 <p>{{ receipt.category }} / <small>{{ receipt.created|date }}</small></p>
             </div>
             <div class="col-xs-2">
