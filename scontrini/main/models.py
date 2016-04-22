@@ -5,6 +5,7 @@ from scontrini.ocr.ocr import OcrReceipt
 from .ateco import ateco_to_category, get_categories
 
 
+
 CATEGORIES = [(c, c) for c in get_categories()]
 
 
@@ -52,3 +53,15 @@ class Receipt(models.Model):
 
         self.receipt_data = l
         self.save()
+
+    def get_icon(self, ):
+        icons = {'Affitto': 'glyphicon-home',
+         'Bollette': 'glyphicon-envelope',
+         'Alberghi e ristoranti': 'glyphicon-cutlery',
+         'Altro': 'glyphicon-gift',
+         'Automobile':'glyphicon-road',
+         'Intrattenimento': 'glyphicon-play',
+         'Spesa': 'glyphicon-shopping-cart',
+         'Vestiti': 'glyphicon-scissors'
+         }
+        return icons.get(self.category, 'glyphicon-eur')

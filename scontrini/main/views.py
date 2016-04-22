@@ -68,8 +68,8 @@ class ReceiptUpdate(UpdateView):
 
 
 
-
 class ReceiptListView(ListView):
+
     queryset = Receipt.objects.filter(completed=True)
 
     def get_queryset(self):
