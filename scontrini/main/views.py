@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import ModelForm
@@ -18,4 +19,7 @@ class ReceiptForm(ModelForm):
 
 class UploadView(LoginRequiredMixin, View):
     def post(self, request):
-        print(request.POST)
+        remove = 'imgData=data:image/png;base64,'
+        image_base64 = request.body[len(remove):]
+
+        return HttpResponse(b'merda')

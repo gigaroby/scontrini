@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 
 	<style>
 		video { border: 1px solid #ccc; display: block; margin: 0 0 20px 0; }
@@ -20,6 +22,7 @@
 	-->
 	<video id="video" width="640" height="480" autoplay></video>
 	<button id="snap" class="sexyButton">Snap Photo</button>
+	<button id="save" class="sexyButton">Save</button>
 	<canvas id="canvas" width="640" height="480"></canvas>
 
 	<script>
@@ -57,6 +60,18 @@
 			document.getElementById("snap").addEventListener("click", function() {
 				context.drawImage(video, 0, 0, 640, 480);
 			});
+
+            document.getElementById("save").addEventListener("click", function() {
+                var canvasData = canvas.toDataURL("image/png");
+                var ajax = new XMLHttpRequest();
+                ajax.open("POST", '/upload/', false);
+                ajax.onreadystatechange = function() {
+                    console.log(ajax.responseText);
+                };
+                ajax.setRequestHeader('Content-Type', 'application/upload');
+                ajax.send("imgData="+canvasData);
+            });
+
 		}, false);
 
 	</script>
