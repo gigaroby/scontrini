@@ -1,2 +1,5 @@
-*.py[co]
 .idea
+
+*.py[co]
+__pycache__
+
