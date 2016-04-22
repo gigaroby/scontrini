@@ -98,6 +98,7 @@ class ReceiptShopSelect(UpdateView):
         context = super().get_context_data(**kwargs)
 
         self.object.fetch_shops()
+
         context['object'] = self.object
 
         return context

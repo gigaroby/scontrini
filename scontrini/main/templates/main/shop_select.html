@@ -14,8 +14,12 @@
                             <input type="radio" name="selected_shop" value="{{ forloop.counter0 }}"
                                 {% if forloop.counter0 == object.selected_shop %}checked{% endif %}>
                         </span>
-                        <div class="form-control">
-                            {{ shop.label }}
+                        <div class="form-control" style="height: 60px">
+                            <strong>{{ shop.label }}</strong> <br>
+
+                            {{ shop.sector }} / {{ shop.province }}
+
+{#                            {{ shop }}#}
                         </div>
                     </div>
                 {% endfor %}

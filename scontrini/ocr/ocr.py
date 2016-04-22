@@ -15,6 +15,7 @@ import os
 def api_url(func):
     return "https://api-u.spaziodati.eu/{}?token={}".format(func, settings.SD_TOKEN)
 
+
 def check_resp(resp):
     if resp.status_code != 200:
         raise Exception("URL [{}] got status {} with content: {}".format(
@@ -83,7 +84,7 @@ class OcrReceipt(object):
         check_resp(resp)
         result = resp.json()
         if result['meta']['items'] == 0:
-            return None
+            return []
         else:
             item = result['results'][0]
             return [{
@@ -112,7 +113,7 @@ class OcrReceipt(object):
             result
         )
         if vatcodes:
-           return vatcodes[0][2:]
+            return vatcodes[0][2:]
         else:
             return None
 
