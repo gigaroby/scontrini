@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from jsonfield import JSONField
+from .ateco import ateco_to_category, get_categories
+
+
+CATEGORIES = [(c, c) for c in get_categories()]
 
 from scontrini.ocr.ocr import OcrReceipt
 
@@ -11,10 +15,7 @@ def user_directory_path(instance, filename):
 
 
 def map_categories(ateco):
-    return CATEGORIES[len(ateco) % len(CATEGORIES)]
-
-
-CATEGORIES = [(c, c) for c in ['Alimentari', 'Benzina']]
+    return ateco_to_category(ateco)
 
 
 class Receipt(models.Model):

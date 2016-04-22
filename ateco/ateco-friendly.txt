@@ -1,0 +1,172 @@
+# A
+01.1 Spesa
+01.2
+01.3
+01.4 
+01.5 Altro
+01.6
+01.7 Spesa
+
+02 Altro
+
+03.1 Spesa
+03.2 Altro
+
+# B
+05 Altro
+06
+07
+08
+09
+
+# C
+10 Spesa
+11
+12 Altro
+13 Vestiti
+14
+15
+16 Altro
+17
+18.1
+18.2
+19
+20
+21 Spesa
+22 Altro
+23 
+24
+25
+26.1 Intrattenimento
+26.2
+26.3
+26.4
+26.5
+26.6
+26.7
+26.8
+27 Altro
+28
+29 Automobile
+30 Altro
+31
+32
+33
+
+# D
+35 Bollette
+
+# E
+36
+37
+38
+39
+
+# F
+41 Altro
+42
+43
+
+# G
+45
+46
+47.1 Spesa
+47.2
+47.3 Automobile
+47.4 Intrattenimento
+47.51 Spesa
+47.52 Altro
+47.53
+47.54
+47.59
+47.61 Intrattenimento
+47.62
+47.63
+47.64
+47.65
+47.71 Spesa
+47.72 Altro
+47.73 Spesa
+47.74
+47.75 Altro
+47.76
+47.77
+47.78
+47.79
+47.8
+47.9
+
+# H
+49 Altro
+50
+51
+52
+53
+
+# I
+55 Alberghi e ristoranti
+56
+
+# J
+58 Intrattenimento
+59
+60
+61
+62
+63
+
+# K
+64 Bollette
+65
+66
+
+# L
+68.1 Altro
+68.2 Affitto
+68.3 Altro
+
+# M
+69
+70
+71
+72
+73
+74
+75
+
+# N
+77
+78
+79 Alberghi e ristoranti
+80 Altro
+81
+82
+
+# O
+84
+
+# P
+85 Bollette
+
+# Q
+86
+87
+88
+
+# R
+90 Intrattenimento
+91
+92
+93
+
+# S
+94 Altro
+95
+96
+
+# T
+97
+98
+
+# U
+99
