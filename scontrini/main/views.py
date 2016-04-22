@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import ModelForm
 from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
 
 from .models import Receipt
 
@@ -29,3 +30,7 @@ class ReceiptUpdate(UpdateView):
     model = Receipt
     fields = ['name', 'category', 'price', 'notes']
     template_name_suffix = '_update_form'
+
+
+class ReceiptListView(ListView):
+    model = Receipt
