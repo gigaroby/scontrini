@@ -1,15 +1,12 @@
 import json
-import math
+from _operator import itemgetter
 
 import jmespath
-import re
-
+import os
 import requests
 import tempfile
-
 from PIL import Image
 from django.conf import settings
-import os
 
 
 def api_url(func):
@@ -75,24 +72,28 @@ class OcrReceipt(object):
         good_vat = self.search_for_piva(ocr_text)
         if good_vat:
             return self.anagrafica_by_vat(good_vat)
+
+        with_company_names = self.search_with_companytxt(ocr_text)
+        if with_company_names:
+            return with_company_names
         else:
             return []
 
-    def anagrafica_by_vat(self, vat):
-        resp = requests.get(api_url('azienda/anagrafica')+'&piva={}'.format(vat))
+    def anagrafica_by_vat(self, vat, fuzzy=0):
+        resp = requests.get(api_url('azienda/anagrafica'), params={'piva': vat, 'fuzzy': 0})
         check_resp(resp)
         result = resp.json()
         if result['meta']['items'] == 0:
-            return None
+            return []
         else:
-            item = result['results'][0]
             return [{
                 'label': item['denominazione'],
                 'province': item['sede']['provincia'],
                 'atoka_link': item['link_atoka'],
                 'sector': item['descrizione'],
-                'vat': item['piva']
-            }]
+                'vat': item['piva'],
+                'ateco_code': item['codice_ateco'][-1]
+            } for item in result['results']]
 
     def search_for_piva(self, text):
         resp = requests.post(
@@ -112,9 +113,31 @@ class OcrReceipt(object):
             result
         )
         if vatcodes:
-           return vatcodes[0][2:]
+            return vatcodes[0][2:]
         else:
-            return None
+            return []
+
+    def search_with_companytxt(self, text):
+        resp = requests.post(
+            api_url('v2/companies/annotate'),
+            data={
+                'text': text,
+                'min_confidence': 0,
+                'include': 'sameAs'
+            }
+        )
+        check_resp(resp)
+        result = resp.json()
+        all_companies = jmespath.search('annotations[?sameAs.vatUrn]', result)
+        if not all_companies:
+            return []
+        else:
+            all_companies = sorted(all_companies, key=itemgetter('confidence'), reversed=True)
+            pivas = [i['sameAs']['vatUrn'][7:] for i in all_companies]
+            all_results = []
+            for piva in pivas:
+                all_results += self.anagrafica_by_vat(piva)
+            return all_results
 
 
 
