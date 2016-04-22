@@ -11,14 +11,11 @@ from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import ModelForm
 from django.forms import HiddenInput
-from django.views.generic.edit import UpdateView, CreateView, FormView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView, FormView
 from django.views.generic.list import ListView
 
 from .models import Receipt, map_categories, CATEGORIES
-
-
-class MainView(TemplateView):
-    template_name = "main.html"
 
 
 class ReceiptForm(ModelForm):
@@ -137,6 +134,10 @@ class ReceiptNewView(FormView):
         self.obj.owner = self.request.user
         self.obj.save()
         return super().form_valid(form)
+
+
+class ReceiptDetail(DetailView):
+    model = Receipt
 
 
 class ReceiptShopSelect(UpdateView):

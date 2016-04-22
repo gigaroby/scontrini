@@ -24,18 +24,20 @@
         form.lat = 0;
         form.long = 0;
         if (!("geolocation" in navigator)) {
+            console.log("[dbg] geolocation is not active");
             submit.enabled = true;
-            form.has_position = false;
+            form.has_position.value = false;
         }
 
         navigator.geolocation.getCurrentPosition(function(position){
-            form.has_position = true;
-            form.lat = position.coords.latitude;
-            form.long = position.coords.longitude;
+            console.log("[dbg] geolocation is active: " + position.coords.latitude + " " + position.coords.longitude);
+            form.has_position.value = true;
+            form.lat.value = position.coords.latitude;
+            form.long.value = position.coords.longitude;
             submit.enabled = true;
         }, function(error) {
-            console.log(error);
-            form.has_position = false;
+            console.log("[dbg] an error occurred " + error);
+            form.has_position.value = false;
             submit.enabled = true;
         });
     </script>

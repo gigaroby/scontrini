@@ -71,12 +71,7 @@ class OcrReceipt(object):
                     os.close(f)
                     enhanced.save(name)
                     current_size = os.path.getsize(name)
-                    print("current size: {}, scale factor: {}, scaled_w: {}, scaled_h: {}".format(current_size, scale_factor, scaled_w, scaled_h))
                     if current_size < settings.OCR_SIZE_LIMIT:
-                        #with Image.open(name) as scaled:
-                            #enhancer = ImageEnhance.Sharpness(scaled)
-                            #new = enhancer.enhance(4)
-                            #new.save(name)
                         print(name)
                         return name
                     else:
