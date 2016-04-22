@@ -50,7 +50,7 @@ class Receipt(models.Model):
         return "<Receipt owner={} created={}>".format(self.owner.username, self.created)
 
     def get_absolute_url(self):
-        return '/edit/{}'.format(self.pk)
+        return '/detail/{}'.format(self.pk)
 
     def fetch_shops(self):
         if self.receipt_data != '':

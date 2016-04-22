@@ -196,3 +196,6 @@ class ReceiptShopSelect(UpdateView):
 
         return out
 
+    def get_success_url(self):
+        return '/edit/{}'.format(self.object.pk)
+
