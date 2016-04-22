@@ -37,12 +37,23 @@ class UploadView(LoginRequiredMixin, View):
         return HttpResponse(new_receipt.id)
 
 
+class ReceiptUpdateForm(ModelForm):
+    required_fields = ['name', 'category', 'price']
+
+    class Meta:
+        model = Receipt
+        fields = ['name', 'category', 'price', 'notes']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.required_fields:
+            self.fields[field].required = True
+
+
 class ReceiptUpdate(UpdateView):
     model = Receipt
-    fields = ['name', 'category', 'price', 'notes']
+    form_class = ReceiptUpdateForm
     template_name_suffix = '_update_form'
-
-    
 
 
 class ReceiptListView(ListView):
