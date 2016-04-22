@@ -42,6 +42,8 @@ class ReceiptUpdate(UpdateView):
     fields = ['name', 'category', 'price', 'notes']
     template_name_suffix = '_update_form'
 
+    
+
 
 class ReceiptListView(ListView):
     model = Receipt

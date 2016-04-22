@@ -8,6 +8,9 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.owner.id, filename)
 
 
+CATEGORIES = [(c, c) for c in ['Alimentari', 'Benzina']]
+
+
 class Receipt(models.Model):
     owner = models.ForeignKey(to=User)
 
@@ -16,7 +19,7 @@ class Receipt(models.Model):
     completed = models.BooleanField(default=False)
 
     name = models.CharField(max_length=200, null=True, blank=True)
-    category = models.CharField(max_length=200, null=True, blank=True)
+    category = models.CharField(max_length=200, null=True, blank=True, choices=CATEGORIES)
     price = models.FloatField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
 
