@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+
+{% block title %}Scontrini{% endblock %}
+
+{% block content %}
+    {% bootstrap_button "Carica un nuovo scontrino" href="/new/" button_class="btn-primary" %}
+
+    <h2>I tuoi scontrini</h2>
+    <ul>
+    {% for receipt in object_list %}
+        <li>
+            {{ receipt.created|date }} - {{ receipt.name }}
+            <a href="/edit/{{ receipt.pk }}">edit</a>
+        </li>
+    {% empty %}
+        <li>No receipts yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
