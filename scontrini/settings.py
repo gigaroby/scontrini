@@ -126,3 +126,8 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+OCR_API_KEY = '13c15061a988957'
+OCR_SIZE_LIMIT = 1000000  # 1 mega
+
+SD_TOKEN = 'h-4b1e65bec2d0476698a7da35a959b90a'
