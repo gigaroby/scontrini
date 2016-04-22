@@ -24,6 +24,7 @@ class Receipt(models.Model):
 
     image = models.ImageField(upload_to=user_directory_path)
     receipt_data = JSONField(blank=True)
+    ocr_text = models.CharField(max_length=40000, blank=True)
     selected_shop = models.IntegerField(null=True)
     completed = models.BooleanField(default=False)
 
@@ -60,6 +61,7 @@ class Receipt(models.Model):
 
         self.receipt_data = l.companies
         self.price_list = l.totals
+        self.ocr_text = l.ocr_text
         self.save()
 
     def get_icon(self):
