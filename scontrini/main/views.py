@@ -56,9 +56,16 @@ class ReceiptUpdate(UpdateView):
     form_class = ReceiptUpdateForm
     template_name_suffix = '_update_form'
 
+    def form_valid(self, form):
+        out = super().form_valid(form)
+        form.instance.completed = True
+        form.instance.save()
+
+        return out
+
 
 class ReceiptListView(ListView):
-    model = Receipt
+    queryset = Receipt.objects.filter(completed=True)
 
 
 class StatisticsView(TemplateView):
