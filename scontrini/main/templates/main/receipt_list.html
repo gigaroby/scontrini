@@ -9,14 +9,20 @@
     {% bootstrap_button "Carica un nuovo scontrino" href="/new/" button_class="btn-primary" %}
 
     <h2>I tuoi scontrini</h2>
-    <ul>
     {% for receipt in object_list %}
-        <li>
-            {{ receipt.created|date }} - {{ receipt.name }}
-            <a href="/edit/{{ receipt.pk }}">edit</a>
-        </li>
+        <div class="row">
+            <div class="col-xs-9">
+                <p><strong>{{ receipt.shop }}</strong></p>
+                <p><small>{{ receipt.created|date }}</small></p>
+            </div>
+            <div class="col-xs-3">
+                <p class="lead">{{ receipt.price }}&euro;</p>
+            </div>
+            <div class="col-xs-3">
+                <a href="/edit/{{ receipt.pk }}">edit</a>
+            </div>
+        </div>
     {% empty %}
         <li>No receipts yet.</li>
     {% endfor %}
-    </ul>
 {% endblock %}
