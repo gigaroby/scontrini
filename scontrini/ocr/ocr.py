@@ -1,3 +1,7 @@
+import json
+import math
+import re
+
 import requests
 import tempfile
 
@@ -12,36 +16,42 @@ class OcrReceipt(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.scaled_filename = None
 
     def scale_image(self):
         original_size = os.path.getsize(self.filename)
-        if original_size > settings.OCR_SIZE_LIMIT:
+        current_size = original_size
+        scale_factor = 1.75
+        if current_size > settings.OCR_SIZE_LIMIT:
             with Image.open(self.filename) as original:
                 w, h = original.size
-                ratio = original_size / settings.OCR_SIZE_LIMIT
+                ratio = original_size / settings.OCR_SIZE_LIMIT / scale_factor
                 scaled_w = w / ratio
                 scaled_h = h / ratio
-                original.thumbnail((scaled_w, scaled_h))
-                temp = tempfile.mkstemp()
-                original.save(temp.name)
-                return temp
+                original.thumbnail((scaled_w, scaled_h), resample=0)
+                f, name = tempfile.mkstemp(suffix='.png')
+                os.close(f)
+                original.save(name)
+                return name
         else:
-            return open(self.filename)
+            return self.filename
 
     def get_ocr_data(self):
-        payload = {
-            'apikey': settings.OCR_API_KEY,
-            'language': 'ita'
-        }
-        with self.scale_image() as scan:
-            resp = requests.post(
-                self.OCR_API_ENDPOINT,
-                data={'apikey': settings.OCR_API_KEY, 'language': 'it'},
-                file=scan
-            )
-            if resp.status_code != 200:
-                raise Exception('OCR API returned {}: {}'.format(resp.status_code, resp.content))
+        fname = self.scale_image()
+        try:
+            with open(fname, 'rb') as f:
+                resp = requests.post(
+                    self.OCR_API_ENDPOINT,
+                    data={'apikey': settings.OCR_API_KEY, 'language': 'ita'},
+                    files={'receipt': f}
+                )
+                if resp.status_code != 200:
+                    raise Exception('OCR API returned {}: {}'.format(resp.status_code, resp.content))
 
-            result = resp.json()
-            return result
+                result = resp.json()
+                if result['IsErroredOnProcessing']:
+                    raise Exception('OCR API fucked you: {}'.format(json.dumps(result)))
+                if result['ParsedResults'] is None:
+                    return ''
+                return result['ParsedResults'][0]['ParsedText']
+        finally:
+            os.remove(fname)
