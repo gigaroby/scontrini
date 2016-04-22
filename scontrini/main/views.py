@@ -64,7 +64,6 @@ class ReceiptUpdate(UpdateView):
         return out
 
 
-
 class ReceiptListView(ListView):
 
     queryset = Receipt.objects.filter(completed=True)
@@ -164,6 +163,11 @@ class ReceiptNewView(FormView):
 
 class ReceiptDetail(DetailView):
     model = Receipt
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['people'] = self.object.selected_company_data['people']
+        return ctx
 
 
 class ReceiptShopSelect(UpdateView):

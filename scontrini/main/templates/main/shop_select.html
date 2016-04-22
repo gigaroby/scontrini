@@ -6,7 +6,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <form action="" method="post">{% csrf_token %}
                 {% for shop in object.receipt_data %}
                     <div class="input-group">
@@ -31,11 +31,13 @@
                             <input type="radio" name="selected_price" value="{{ forloop.counter0 }}"
                                 {% if forloop.counter0 == object.price_list %}checked{% endif %}>
                         </span>
-                        <div class="form-control" style="height: 60px">
+                        <div class="form-control">
                             {{ pprice }}
                         </div>
                     </div>
                 {% endfor %}
+
+                <br/>
 
 
                 {% buttons %}
@@ -46,6 +48,11 @@
                     {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
                 {% endbuttons %}
             </form>
+        </div>
+        <div class="col-lg-4">
+            <a href="#" class="thumbnail">
+                <img src="{{ object.image.url }}" alt="receipt">
+            </a>
         </div>
     </div>
 {% endblock %}

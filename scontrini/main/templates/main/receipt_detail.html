@@ -9,10 +9,31 @@
         <div class="col-xs-6 col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Panel title</h3>
+                    <h3 class="panel-title">People</h3>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                    {% if people %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Ruolo</th>
+                                <th>Data di nascita</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for person in people %}
+                                <tr>
+                                    <td>{{ person.name }}</td>
+                                    <td>{{ person.role }}</td>
+                                    <td>{{ person.birthday }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Non ci sono persone da mostrare per questa compagnia</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

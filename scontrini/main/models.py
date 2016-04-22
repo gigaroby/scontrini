@@ -41,6 +41,10 @@ class Receipt(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def selected_company_data(self):
+        return self.receipt_data[self.selected_shop]
+
     def __str__(self):
         return "<Receipt owner={} created={}>".format(self.owner.username, self.created)
 
