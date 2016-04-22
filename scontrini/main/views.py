@@ -78,5 +78,19 @@ class StatisticsView(TemplateView):
                 "name": name,
                 "y": (amount/total)*100
             } for name, amount in c.items()]
-        }];
+        }]
         return {'data': json.dumps(data), 'caption': 'Categorie di acquisto'}
+
+
+class ReceiptShopSelect(UpdateView):
+    template_name = 'main/shop_select.html'
+    model = Receipt
+    fields = ['selected_shop']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        self.object.fetch_shops()
+        context['object'] = self.object
+
+        return context

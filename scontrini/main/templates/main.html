@@ -63,7 +63,7 @@
                 ajax.open("POST", '/upload/', false);
                 ajax.onreadystatechange = function() {
                     console.log(ajax.responseText);
-                    window.location.href = '/edit/' + ajax.responseText;
+                    window.location.href = '/select/' + ajax.responseText;
                 };
                 ajax.setRequestHeader('Content-Type', 'application/upload');
                 ajax.send("imgData="+canvasData);

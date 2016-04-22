@@ -19,14 +19,17 @@ from django.conf.urls import url
 from django.contrib import admin
 
 
-from scontrini.main.views import MainView, UploadView, ReceiptUpdate, ReceiptListView, StatisticsView
+from scontrini.main.views import MainView, UploadView, ReceiptUpdate, ReceiptShopSelect, ReceiptListView, StatisticsView
 
 urlpatterns = [
+    url(r'^$', ReceiptListView.as_view(), name='home'),
+
     url(r'^admin/', admin.site.urls),
+
     url(r'^new/$', MainView.as_view(), name='new-receipt'),
     url(r'^upload/$', UploadView.as_view()),
     url(r'^edit/(?P<pk>\d+)$', ReceiptUpdate.as_view()),
-    url(r'^$', ReceiptListView.as_view(), name='home'),
+    url(r'^select/(?P<pk>\d+)$', ReceiptShopSelect.as_view()),
 
     url(r'^stats/$', StatisticsView.as_view(), name='view-stats'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

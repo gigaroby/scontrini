@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Seleziona negozio{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-6">
+            <form action="" method="post">{% csrf_token %}
+                {% for shop in object.receipt_data %}
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="radio" name="selected_shop" value="{{ forloop.counter0 }}"
+                                {% if forloop.counter0 == object.selected_shop %}checked{% endif %}>
+                        </span>
+                        <div class="form-control">
+                            {{ shop.label }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok" %} Select
+                    </button>
+
+                    {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

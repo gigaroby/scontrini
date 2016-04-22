@@ -20,6 +20,7 @@ class Receipt(models.Model):
 
     image = models.ImageField(upload_to=user_directory_path)
     receipt_data = JSONField(blank=True)
+    selected_shop = models.IntegerField(null=True)
     completed = models.BooleanField(default=False)
 
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -34,3 +35,12 @@ class Receipt(models.Model):
 
     def get_absolute_url(self):
         return '/edit/{}'.format(self.pk)
+
+    def fetch_shops(self):
+        if self.receipt_data != '':
+            return
+        self.receipt_data = [
+            {'label': 'La vecchia', 'address': {'municipality': 'Trento'}},
+            {'label': 'Gli evasori', 'address': {'municipality': 'Trento'}},
+        ]
+        self.save()
