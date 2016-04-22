@@ -32,6 +32,7 @@ class Receipt(models.Model):
     category = models.CharField(max_length=200, null=True, blank=True, choices=CATEGORIES)
     price_list = JSONField(blank=True)
     price = models.FloatField(null=True)
+    selected_price = models.IntegerField(null=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
 
     has_position = models.BooleanField(default=False)
