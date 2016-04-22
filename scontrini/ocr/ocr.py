@@ -48,23 +48,20 @@ class OcrReceipt(object):
 
     def get_ocr_data(self):
         fname = self.scale_image()
-        try:
-            with open(fname, 'rb') as f:
-                resp = requests.post(
-                    self.OCR_API_ENDPOINT,
-                    data={'apikey': settings.OCR_API_KEY, 'language': 'ita'},
-                    files={'receipt': f}
-                )
-                check_resp(resp)
+        with open(fname, 'rb') as f:
+            resp = requests.post(
+                self.OCR_API_ENDPOINT,
+                data={'apikey': settings.OCR_API_KEY, 'language': 'ita'},
+                files={'receipt': f}
+            )
+            check_resp(resp)
 
-                result = resp.json()
-                if result['IsErroredOnProcessing']:
-                    raise Exception('OCR API fucked you: {}'.format(json.dumps(result)))
-                if result['ParsedResults'] is None:
-                    return ''
-                return result['ParsedResults'][0]['ParsedText']
-        finally:
-            os.remove(fname)
+            result = resp.json()
+            if result['IsErroredOnProcessing']:
+                raise Exception('OCR API fucked you: {}'.format(json.dumps(result)))
+            if result['ParsedResults'] is None:
+                return ''
+            return result['ParsedResults'][0]['ParsedText']
 
     def get_company_list(self):
         ocr_text = self.get_ocr_data()
