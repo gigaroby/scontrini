@@ -5,15 +5,24 @@
 {% block title %}Scontrini{% endblock %}
 
 {% block content %}
-    <form action="" method="post">{% csrf_token %}
-        {% bootstrap_form form %}
+    <div class="row">
+        <div class="col-lg-4">
+            <form action="" method="post">{% csrf_token %}
+                {% bootstrap_form form %}
 
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "save" %} Save
-            </button>
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "save" %} Save
+                    </button>
 
-            {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
-        {% endbuttons %}
-    </form>
+                    {% bootstrap_button "Cancel" href="/" button_class="btn-link" %}
+                {% endbuttons %}
+            </form>
+        </div>
+        <div class="col-lg-4">
+            <a href="#" class="thumbnail">
+                <img src="{{ object.image.url }}" alt="receipt">
+            </a>
+        </div>
+    </div>
 {% endblock %}

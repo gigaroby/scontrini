@@ -7,7 +7,6 @@
 
 {% block content %}
     <div class="row">
-
         <div class="col-sm-offset-3 col-sm-2">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
@@ -60,7 +59,7 @@
             </div>
             <div class="col-sm-7">
                 <a href="{% url 'detail-receipt' pk=receipt.pk %}" title="View"><p class="lead">{{ receipt.shop }}</p></a>
-                <p><span class="label label-default">{{ receipt.category }}</span> / <small>{{ receipt.created|date }}</small></p>
+                <p><span class="label label-info">{{ receipt.category }}</span> / <small>{{ receipt.created|date }}</small></p>
             </div>
             <div class="col-sm-2">
                 <p class="lead">{{ receipt.price }}&euro;</p>
